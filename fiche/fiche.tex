@@ -1,0 +1,112 @@
+\documentclass[a4paper,10pt, french]{article}
+
+\usepackage{fancyhdr}
+
+% Utilisation de tous les packages nécéssaires
+\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}%           gestion des accents (source)
+\usepackage[T1]{fontenc}%              gestion des accents (PDF)
+\usepackage[francais]{babel}%          gestion du français
+\usepackage{textcomp}%                 caractères additionnels
+\usepackage{lmodern}%                  police de caractère
+\usepackage{geometry}%                 gestion des marges
+\usepackage{graphicx}%                 gestion des images
+\usepackage{array}%                    gestion améliorée des tableaux
+\usepackage{calc}%                     syntaxe naturelle pour les calculs
+\usepackage{amsmath}
+\usepackage{dsfont}
+\usepackage{color}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings} %Algorithmes
+\usepackage{listingsutf8}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\graphicspath{ {img/} }
+
+
+\hypersetup{
+colorlinks=true, %colorise les liens
+breaklinks=true, %permet le retour à la ligne dans les liens trop longs
+urlcolor= blue, %couleur des hyperliens
+linkcolor= black, %couleur des liens internes
+citecolor=blue,    %couleur des liens de citations
+}
+
+
+\definecolor{Comments}{rgb}{0.13,0.54,0.13}
+\definecolor{Strings}{rgb}{0,0.63,0}
+\definecolor{Keywords}{rgb}{0,0,1}
+\definecolor{Background}{rgb}{1,1,1}
+\definecolor{Variables}{rgb}{0.62, 0.12, 0.94}
+
+\tolerance=1000
+
+\title{Descriptions, analyse et comparaison des formats MUSICAM et MP3. Codage du format MUSICAM }
+\author{Robin \bsc{Condat}, Alexis \bsc{Durieux}, Guillaume \bsc{Boulier}}
+\date{ASI4 - 2016}
+
+\pagestyle{fancy}
+\fancyhead[R]{}
+\fancyhead[L]{\includegraphics[scale=0.35]{insa-logo.png}}
+
+\begin{document}
+\maketitle
+
+\section{Qu'est ce que le codage audio ?}
+  Le codage audio consiste à transformer des voix, sons, musiques sous forme numérique dans un fichier audio. Il existe plusieurs sortes de formats de fichiers audio, chacun reposant sur un encodage différents. On peut distinguer deux catégories de formats de fichiers audios: les formats de compression avec pertes et les formats de compressions sans pertes. L'enjeu du codage est de pouvoir à la fois transmettre le signal sous forme de fichier mais également de lire le signal à partir du fichier. Onappelle codec le programme qui transforme le signal en fichier et le fichier en signal.
+  Le codage audio tient compte de plusieurs critères afin de limiter la quantité d'information et donc la taille du fichier compressé.
+  \begin{enumerate}
+    \item Les conversions de sons en signal audio analogique ou numérique, se limitent au spectre de fréquences correspondant à l'audition humaine, ou un peu plus.
+    \item La plupart tirent parti de la moindre sensibilité de l'oreille aux fréquences les plus basses et les plus élevées en déplaçant vers ces fréquences le bruit de fond et le bruit de quantification.o
+    \item Les codecs peuvent de plus détecter les redondances du signal audio, de façon à ne transmettre que la partie imprévisible du signal. Tous les éléments qui font la différence entre le signal et le bruit, qu'il s'agisse de fréquences musicales ou de rythmes, sont basés sur la répétition à plusieurs reprises d'un phénomène.
+    \item Le codec tient compte des effets de masque. Un effet de masque consiste en un son qui rend inaudible un autre.
+    \item Les codecs sont basés sur un modèle de l'audition humaine et visent à ne transmettre que les informations nécessaires pour obtenir la même perception auditive que pour le signal brut de numérisation.
+  \end{enumerate}
+  \subsection{Codage sans pertes}
+  La compression audio sans perte se base la détection de redondances dans les fichiers ou les flux audio. En référence à la théorie de l'information de Claude Shannon, on la décrit comme codage de l'entropie. Les formats récents utilisent le codage de Huffman ou le procédé de prédiction par reconnaissance partielle. Plus la méthode est complexe, plus le codec aura besoin de temps / ressources. Certaines méthodes de compression effectuent deux passes, l'une de reconnaissance du fichier, la seconde de codage ; elles sont donc inutilisables pour les flux. La compression sans perte (lossless) signifie qu'on utilise un algorithme tel qu'on puisse toujours retrouver les données d'origine.
+  Typiquement, la compression réversible permet de diviser la taille des fichiers par deux ou trois. Elle est relativement peu utilisée, car ce gain est faible en comparaison de ceux permis par la compression non réversible, qui cependant utilise les mêmes procédés, après avoir éliminé les informations jugées non pertinentes.
+  \subsection{Codage avec pertes}
+  La compression audio avec perte d'informations (lossy) se base sur des algorithmes pour déterminer quelles transformations simplifient la représentation du son tout en restituant au mieux l'impression sonore. Elle diminue la taille du fichier en éliminant les nuances non perçues ou moins essentielles au contenu. L'élimination est définitive, créer un fichier dans un format de haute qualité à partir d'un fichier compressé avec pertes ne peut servir strictement qu'à diminuer la charge de calcul du décodeur en lecture.
+  Le format le plus connu est le MPEG-1/2 Audio Layer 3, dont le suffixe est .mp3. Ce format propose une qualité sonore très correcte pour un débit de 128 kbit/s. C'est ce format qui a été massivement utilisé pour transférer les musiques via internet dès la fin des années 1990. Rapidement, des baladeurs avec une mémoire réenregistrable et capables de lire directement ce format sont apparus.
+
+\section{Description des formats MUSICAM et MP3}
+  Dans ce projet nous nous intéresserons seulement au codage avec pertes. En particulier les codages MUSICAM et MP3.
+  \subsection{Codage MUSICAM}
+  MUSICAM (Masking pattern adapted Universal Subband Coding And Multiplexing) est un format de codage développé en 1989 par le Centre commun d'études de télévision et télécommunications (CCETT), Philips et the Institut für Rundfunktechnik (IRT).
+Il fut créé dans le cadre du programme de recherche EUREKA (EU-147) et a ensuite été dérivé pour le codage MPEG-1 Audio Layer 2, plus communément appelé mp2.
+Ce format est basé sur un pur codage psycho-acoustique et un banc de filtres adaptés aux sons de type percussifs.
+  \subsection{Codage MP3}
+  Le format MPEG-1/2 Audio Layer III, plus connu sous le nom de mp3, et un format de compression audio développé par un groupe de travail composé de  Leon Van de Kerkhof (Philips), Yves-Francois Dehery (TDF-CCETT), Karlheinz Brandenburg (Fraunhofer-Gesellschaft).
+Ce groupe reprenant des idées de MUSICAM et d'ASPEC, ajouta de nouveaux outils technologiques et créa le format MP3 conçu pour être de même qualité à 128 kbit/s que le Musicam à 192 kbit/s. Ce format est aujourd'hui très utilisé car il comporte de nombreux avantages : la compression est performante, le format est standardisé et est très répandu et la gestion des tags (descripteurs) est possible. Cependant la dégradation de la qualité audio est parfois perceptible.
+  \subsection{Comparaison}
+    \begin{tabular}{| l  | c | r | }
+      \hline
+      Tableau de comparaison & MUSICAM (Layer II) & MP3 (Layer III) \\ \hline \hline
+      Qualité audio & 192 kbits/s & 128 kbits/s \\
+      Compression & 8 & 9 \\
+      Encodage & "Subband coding"& "Audio Data Compression" \\
+      Sample Rate & 32, 44.1, 48 kHz & 8, 11.025, 12, 16, 22.05, 24, 32, 44.1, 48 kHz \\
+      \hline
+    \end{tabular}
+    \newline
+    L'encodage en sous-bande consiste à diviser un signal en un nombre donné de bandes de fréquences en utilisant une transformée de Fourier rapide et encoder chacune des composantes indépendamment l'une de l'autre. La compression s'effectue donc dans le domaine du temps. C'est ce qui est utilisé pour \textbf{MUSICAM (Layer II)}. Le format /textbf{MP3} lui utilise le fait que certaines fréquences ne sont pas perceptible par l'homme. La compression s'effectue donc dans le domaine de fréquences.
+
+\section{Présentation du Projet}
+ Après analyse de la problématique nous avons décider d'implémenter un codage MUSICAM ainsi que son décodage. Comme expliqué précedemment le codage MUSICAM consiste à diviser le signal d'entrée en 32 bandes de fréquences et de coder les échantillons au dessus du seuil de masquage. Puis un algorithme de Huffman est optimisé afin d'encoder efficacement. Notre projet va donc consister en la création d'un soft permettant de prendre en entrée un fichier musical et de transmettre ce fichier compressé à l'aide de l'algorithme MUSICAM en sortie. Afin de tester notre codage nous allons devoir créer un soft permettant de décoder notre fichier audio précédemment compressé. À partir de là, nous allons pouvoir adapter les paramètres de notre algorithme d'encodage. En effet, nous comptons évaluer notre méthode de compression de la façon suivante. Dans un premier temps nous allons pouvoir analyser qualitativement la compression. Puis en comparant bit à bit le fichier d'origine avec le fichier compressé décodé, nous allons pouvoir tracer une courbe du taux de compression en fonction de la perte d'information. C'est à partir de ces informations que nous allons pouvoir faire des choix sur les paramètres de notre algorithme d'encodage MUSICAM.
+ \section{Sources}
+ \begin{itemize}
+   \item \url{https://books.google.fr/books?id=_7z8BAAAQBAJ&pg=PA51&lpg=PA51&dq=Masking+pattern+Universal+Sub-band+Integrated+Coding+And+Multiplexing&source=bl&ots=rYep4aKP5Z&sig=BNJjIiP7be9gMmDsPuWxAvmPU54&hl=en&sa=X&ved=0ahUKEwjMxe_mm5XQAhUDAxoKHaKDAX4Q6AEIJjAC#v=onepage&q=Masking%20pattern%20Universal%20Sub-band%20Integrated%20Coding%20And%20Multiplexing&f=fals}
+   \item \url{https://en.wikipedia.org/wiki/MPEG-1_Audio_Layer_II}
+   \item \url{https://fr.wikipedia.org/wiki/MPEG-1/2_Audio_Layer_III}
+   \item \url{http://icar.univ-lyon2.fr/projets/corinte/confection/codecs.htm}
+   \item \url{http://www.auvisoft.com/audio_format.htm}
+   \item \url{https://www.mp3-tech.org/programmer/docs/mp3_theory.pdf}
+   \item \url{https://books.google.fr/books?id=5kVUfnt1QQYC&pg=PA144&lpg=PA144&dq=Masking+pattern+Universal+Sub-band+Integrated+Coding+And+Multiplexing&source=bl&ots=Vt3ueUh0jr&sig=ItSLOI4GLHBlrpeJmJ5ecis_DN8&hl=en&sa=X&ved=0ahUKEwjJjcuqopXQAhVG0xoKHZGIAvgQ6AEIHzAA#v=onepage&q=Masking%20pattern%20Universal%20Sub-band%20Integrated%20Coding%20And%20Multiplexing&f=false}
+   \item \url{https://bytes.com/topic/c/answers/693975-how-encode-raw-audio-into-mp2-mp3-formats}
+   \item \url{http://www-igm.univ-mlv.fr/~dr/XPOSE2002/compressionAugert/son.htm}
+ \end{itemize}
+\end{document}
